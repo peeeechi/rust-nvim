@@ -26,43 +26,30 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# rust install
-RUN curl --proto '=https' --tlsv1.2 -sSf -o /tmp/rustup.sh https://sh.rustup.rs \
-  && chmod 777 /tmp/rustup.sh \
-  && /tmp/rustup.sh -y \
-  && . "$HOME/.cargo/env" \
-  && rustup component add \
+# # Rust install
+ENV RUST_HOME /usr/local/lib/rust
+ENV RUSTUP_HOME ${RUST_HOME}/rustup
+ENV CARGO_HOME ${RUST_HOME}/cargo
+
+RUN mkdir ${RUST_HOME} \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ${RUST_HOME}/rustup.sh \
+    && chmod +x ${RUST_HOME}/rustup.sh \
+    && ${RUST_HOME}/rustup.sh -y --default-toolchain stable --no-modify-path
+
+ENV PATH $CARGO_HOME/bin:$PATH
+
+  # rust-analysis \
+RUN rustup component add \
   rustfmt \
   rls \
   rust-src \
   rust-analyzer \
   && rustup target add \
-  x86_64-pc-windows-gnu 
-
-# # Rust install
-# ENV RUST_HOME /usr/local/lib/rust
-# ENV RUSTUP_HOME ${RUST_HOME}/rustup
-# ENV CARGO_HOME ${RUST_HOME}/cargo
-
-# RUN mkdir ${RUST_HOME} \
-#     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ${RUST_HOME}/rustup.sh \
-#     && chmod +x ${RUST_HOME}/rustup.sh \
-#     && ${RUST_HOME}/rustup.sh -y --default-toolchain stable --no-modify-path
-
-# ENV PATH $PATH:$CARGO_HOME/bin
-
-#   # rust-analysis \
-# RUN rustup component add \
-#   rustfmt \
-#   rls \
-#   rust-src \
-#   rust-analyzer \
-#   && rustup target add \
-#   x86_64-pc-windows-gnu \
-#   && chmod -R 0777 $RUST_HOME
-  
+  x86_64-pc-windows-gnu \
+  && chmod -R 0777 $RUST_HOME
 
 # 日本語設定
+ENV LANG ja_JP.UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends \
   language-pack-ja-base \
   language-pack-ja \
@@ -100,12 +87,16 @@ RUN groupadd -g ${GID} ${GROUP_NAME} \
   && unzip JetBrainsMono.zip -d /home/${USER_NAME}/.local/share/fonts/ \
   && fc-cache /home/${USER_NAME}/.local/share/fonts/ \
   # set up NvChad for neovim
-  && mkdir -p /home/${USER_NAME}/.config/nvim \
-  && git clone https://github.com/NvChad/NvChad /home/${USER_NAME}/.config/nvim --depth 1 \
+  && git clone https://github.com/peeeechi/dotfiles.git /home/${USER_NAME}/dotfiles \
+  # && mkdir -p /home/${USER_NAME}/dotfiles/.config/nvim \
+  && git clone --branch rust https://github.com/peeeechi/nvim-configs.git /home/${USER_NAME}/dotfiles/dotfiles/.config/nvim \
+  && ln -siv /home/${USER_NAME}/dotfiles/dotfiles/.bashrc /home/${USER_NAME}/.bashrc \
+  && ln -siv /home/${USER_NAME}/dotfiles/dotfiles/.bash_aliases /home/${USER_NAME}/.bash_aliases \
+  && ln -siv /home/${USER_NAME}/dotfiles/dotfiles/.vimrc /home/${USER_NAME}/.vimrc \
+  && ln -siv /home/${USER_NAME}/dotfiles/dotfiles/.config /home/${USER_NAME}/.config \
+  # && git clone https://github.com/NvChad/NvChad /home/${USER_NAME}/.config/nvim --depth 1 \
   && chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}
 
 COPY ./scripts/* /tmp/
-
-VOLUME [ "/home/${USER_NAME}" ]
 ENTRYPOINT [ "/tmp/init.sh" ]
 CMD [ "/bin/bash" ]

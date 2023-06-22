@@ -9,5 +9,5 @@ echo -e "\nafter create user --------------"
 COMMAND="$@"
 
 echo -e "\nexec command: $COMMAND --------------\n"
-cd /home/${USER_NAME}
+# cd /home/${USER_NAME}
 gosu $USER_NAME:$GROUP_NAME $COMMAND
