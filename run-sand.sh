@@ -2,7 +2,7 @@
 
 this_dir=$(dirname $0)
 source $this_dir/.env
-: ${TAG:="latest"}
+: ${TAG:="sandbox"}
 
 call_dir=$(pwd)
 echo "arg count: $#"
@@ -19,10 +19,9 @@ ENVS="-e TZ=Asia/Tokyo \
 # --mount type=bind,src=$(pwd)/.config,dst=/home/inoue/.config \
 MOUNT="\
 --mount type=bind,src=${target},dst=/home/inoue/ws/ \
+--mount type=bind,src=${call_dir}/config_bk,dst=/home/inoue/.config/nvim/ \
 --mount type=volume,src=nvim_cache,dst=/home/inoue/.local \
 "
 WORKING_DIR="-w /home/inoue/ws"
-
-echo "${REPOSITORY}/${IMAGE}:${TAG}"
 
 docker run --rm -it ${ENVS} ${MOUNT} ${WORKING_DIR} "${REPOSITORY}/${IMAGE}:${TAG}" /bin/bash
