@@ -21,6 +21,8 @@ do
   esac
 done
 
-: ${TAG:="latest"}
+: ${TAG:="sandbox"}
 
-docker image build $is_force -t "${REPOSITORY}/${IMAGE}:${TAG}" .
+BUILD_ARGS="--build-arg DISPLAY=${DISPLAY}"
+
+docker image build -f ./Dockerfile.sand $is_force -t "${REPOSITORY}/${IMAGE}:${TAG}" .
