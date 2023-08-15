@@ -25,4 +25,4 @@ done
 
 BUILD_ARGS="--build-arg DISPLAY=${DISPLAY}"
 
-docker image build -f ./Dockerfile.sand $is_force -t "${REPOSITORY}/${IMAGE}:${TAG}" .
+docker image build -f ./Dockerfile $is_force -t "${REPOSITORY}/${IMAGE}:${TAG}" .

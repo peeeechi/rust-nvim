@@ -4,12 +4,11 @@ this_dir=$(dirname $0)
 source $this_dir/.env
 : ${TAG:="sandbox"}
 
-call_dir=$(pwd)
 echo "arg count: $#"
 if [ $# = 0 ]; then
-  target=$call_dir
+  target=$(pwd)
 else
-  target="${call_dir}/$1"
+  target="${this_dir}/$1"
 fi
 
 ENVS="-e TZ=Asia/Tokyo \
@@ -19,7 +18,7 @@ ENVS="-e TZ=Asia/Tokyo \
 # --mount type=bind,src=$(pwd)/.config,dst=/home/inoue/.config \
 MOUNT="\
 --mount type=bind,src=${target},dst=/home/inoue/ws/ \
---mount type=bind,src=${call_dir}/config_bk,dst=/home/inoue/.config/nvim/ \
+--mount type=bind,src=./config_bk,dst=/home/inoue/.config/nvim/ \
 --mount type=volume,src=nvim_cache,dst=/home/inoue/.local \
 "
 WORKING_DIR="-w /home/inoue/ws"

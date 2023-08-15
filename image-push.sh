@@ -1,8 +1,8 @@
-#!/bin/bash -eu
+!/bin/bash -eu
 
 cd $(dirname $0)
 source ./.env
 
-: ${TAG:="latest"}
+: ${TAG:="sandbox"}
 
 docker push "${REPOSITORY}/${IMAGE}:${TAG}"
