@@ -88,8 +88,6 @@ RUN groupadd -g ${GID} ${GROUP_NAME} \
   && curl -LO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/JetBrainsMono.zip \
   && unzip JetBrainsMono.zip -d /home/${USER_NAME}/.local/share/fonts/ \
   && fc-cache /home/${USER_NAME}/.local/share/fonts/ \
-  # install packer
-  && git clone --depth 1 https://github.com/wbthomason/packer.nvim /home/${USER_NAME}/.local/share/nvim/site/pack/packer/start/packer.nvim \
   && chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}
 
 COPY ./scripts/* /tmp/
