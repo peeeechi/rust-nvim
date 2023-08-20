@@ -13,7 +13,9 @@ fi
 
 ENVS="-e TZ=Asia/Tokyo \
       -e UID=`(id -u)` \
-      -e GID=`(id -g)`"
+      -e GID=`(id -g)` \
+      -e DISPLAY=${DISPLAY}"
+
 
 # --mount type=bind,src=$(pwd)/.config,dst=/home/inoue/.config \
 MOUNT="\
