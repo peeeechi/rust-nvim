@@ -1,0 +1,63 @@
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+-- lazy.nvim がダウンロードされていない場合はDownload
+if not vim.loop.fs_stat(lazypath) then
+  print('lazy.nvim loading ...')
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+
+require('lazy').setup({
+  'tpope/vim-commentary',
+  {
+    'neovim/nvim-lspconfig', -- LSP
+    cmd = {
+      "LspInfo",
+      "LspLog",
+    },
+    event = { "BufRead" },
+--     config = function()
+--       require "user.config.lap.setup"
+--     end,
+  },
+  {
+    "williamboman/mason.nvim",
+    cmd = {
+      "Mason",
+      "MasonInstall",
+    },
+    event = {
+      "WinNew",
+      "WinLeave",
+      "BufRead",
+    },
+  },
+  "williamboman/mason-lspconfig.nvim",
+  'tjdevries/colorbuddy.vim',
+  'tjdevries/gruvbuddy.nvim',
+--   {
+--     -- for colorscheme
+--     "svrana/neosolarized.nvim",
+--     dependencies = {
+--       'tjdevries/colorbuddy.vim',
+--       'tjdevries/gruvbuddy.nvim',
+--       'overcache/NeoSolarized',
+--     },
+--   },
+  -- 'hoob3rt/lualine.nvim',
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      opt = true,
+    },
+    event = 'VeryLazy',
+  },
+}, {})

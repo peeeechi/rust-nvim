@@ -22,9 +22,10 @@ MOUNT="\
 --mount type=bind,src=${target},dst=/home/inoue/ws/ \
 --mount type=bind,src=./config_bk,dst=/home/inoue/.config/nvim/ \
 --mount type=volume,src=nvim_cache,dst=/home/inoue/.local \
+--mount type=bind,src=/tmp/.X11-unix/X0,dst=/tmp/.X11-unix/X0 \
 "
 WORKING_DIR="-w /home/inoue/ws"
 
 echo "${REPOSITORY}/${IMAGE}:${TAG}"
-
+xhost + local:${USER}
 docker run --rm -it ${ENVS} ${MOUNT} ${WORKING_DIR} "${REPOSITORY}/${IMAGE}:${TAG}" /bin/bash

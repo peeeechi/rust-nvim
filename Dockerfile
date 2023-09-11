@@ -6,6 +6,7 @@ ARG UID=1000
 ARG GID=${UID}
 ARG PASS=${USER_NAME}
 ARG DISPLAY=:1
+ARG NODE_VERSION=18
 
 ENV USER_NAME=${USER_NAME}
 ENV GROUP_NAME=${GROUP_NAME}
@@ -66,9 +67,11 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   xclip \
   unzip \
   fontconfig \
-  # for vim-vimrc-coc
-  && curl -sL https://deb.nodesource.com/setup_14.x  | bash - \
+  # install node.js
+  && curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sh - \
   && apt-get install nodejs \
+  # install typescript-language-server
+  && npm i -g typescript-language-server \
   # download neovim image
   && curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage \
   && chmod +x nvim.appimage \
@@ -89,6 +92,14 @@ RUN groupadd -g ${GID} ${GROUP_NAME} \
   && unzip JetBrainsMono.zip -d /home/${USER_NAME}/.local/share/fonts/ \
   && fc-cache /home/${USER_NAME}/.local/share/fonts/ \
   && chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}
+
+# install lua-language-server
+# RUN curl -LO https://github.com/LuaLS/lua-language-server/releases/download/3.7.0/lua-language-server-3.7.0-linux-x64.tar.gz \
+#   && mkdir /lua-language-server \
+#   && tar -zxvf /lua-language-server-3.7.0-linux-x64.tar.gz -C /lua-language-server \
+#   && chmod -R 777 /lua-language-server
+
+# ENV PATH /lua-language-server/bin/:$PATH
 
 COPY ./scripts/* /tmp/
 ENTRYPOINT [ "/tmp/init.sh" ]
